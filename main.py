@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-# %matplotlib inline
-
 import numpy as np
 np.set_printoptions(suppress=True)
 
 from shutil import copyfile
 import random
-from importlib import reload
 
 
 from keras.utils import plot_model
@@ -23,7 +19,6 @@ from settings import run_folder, run_archive_folder
 import initialise
 import pickle
 
-
 lg.logger_main.info('=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*')
 lg.logger_main.info('=*=*=*=*=*=.      NEW LOG      =*=*=*=*=*')
 lg.logger_main.info('=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*')
@@ -32,7 +27,7 @@ env = Game()
 
 # If loading an existing neural network, copy the config file to root
 if initialise.INITIAL_RUN_NUMBER != None:
-    copyfile(run_archive_folder  + env.name + '/run' + str(initialise.INITIAL_RUN_NUMBER).zfill(4) + '/config.py', './config.py')
+    copyfile(run_archive_folder + env.name + '/run' + str(initialise.INITIAL_RUN_NUMBER).zfill(4) + '/config.py', './config.py')
 
 import config
 
@@ -64,7 +59,7 @@ else:
 
 #copy the config file to the run folder
 copyfile('./config.py', run_folder + 'config.py')
-plot_model(current_NN.model, to_file=run_folder + 'models/model.png', show_shapes = True)
+#plot_model(current_NN.model, to_file=run_folder + 'models/model.png', show_shapes = True)
 
 print('\n')
 
@@ -80,23 +75,32 @@ while 1:
     iteration += 1
     reload(lg)
     reload(config)
-    
+
     print('ITERATION NUMBER ' + str(iteration))
-    
+
+    with open("main.log", "a") as mainlog:
+        mainlog.write('ITERATION NUMBER ' + str(iteration)+'\n')
+
     lg.logger_main.info('BEST PLAYER VERSION: %d', best_player_version)
     print('BEST PLAYER VERSION ' + str(best_player_version))
+    with open("main.log", "a") as mainlog:
+        mainlog.write('BEST PLAYER VERSION ' + str(best_player_version) + '\n')
 
     ######## SELF PLAY ########
     print('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...')
+    with open("main.log", "a") as mainlog:
+        mainlog.write('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...\n')
     _, memory, _, _ = playMatches(best_player, best_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
     print('\n')
-    
+
     memory.clear_stmemory()
-    
+
     if len(memory.ltmemory) >= config.MEMORY_SIZE:
 
         ######## RETRAINING ########
         print('RETRAINING...')
+        with open("main.log", "a") as mainlog:
+            mainlog.write('RETRAINING...\n')
         current_player.replay(memory.ltmemory)
         print('')
 
@@ -106,9 +110,9 @@ while 1:
         lg.logger_memory.info('====================')
         lg.logger_memory.info('NEW MEMORIES')
         lg.logger_memory.info('====================')
-        
+
         memory_samp = random.sample(memory.ltmemory, min(1000, len(memory.ltmemory)))
-        
+
         for s in memory_samp:
             current_value, current_probs, _ = current_player.get_preds(s['state'])
             best_value, best_probs, _ = best_player.get_preds(s['state'])
@@ -123,7 +127,7 @@ while 1:
             lg.logger_memory.info('INPUT TO MODEL: %s', current_player.model.convertToModelInput(s['state']))
 
             s['state'].render(lg.logger_memory)
-            
+
         ######## TOURNAMENT ########
         print('TOURNAMENT...')
         scores, _, points, sp_scores = playMatches(best_player, current_player, config.EVAL_EPISODES, lg.logger_tourney, turns_until_tau0 = 0, memory = None)

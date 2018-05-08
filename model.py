@@ -1,10 +1,12 @@
-# %matplotlib inline
+import sys
+in_jupyter = "ipyker" in sys.argv[0]
 
 import logging
 import config
 import numpy as np
 
-import matplotlib.pyplot as plt
+if in_jupyter:
+	import matplotlib.pyplot as plt
 
 from keras.models import Sequential, load_model, Model
 from keras.layers import Input, Dense, Conv2D, Flatten, BatchNormalization, Activation, LeakyReLU, add
@@ -37,6 +39,9 @@ class Gen_Model():
 
 	def read(self, game, run_number, version):
 		return load_model( run_archive_folder + game + '/run' + str(run_number).zfill(4) + "/models/version" + "{0:0>4}".format(version) + '.h5', custom_objects={'softmax_cross_entropy_with_logits': softmax_cross_entropy_with_logits})
+	
+	def read_path(self, path):
+		return load_model(path, custom_objects={'softmax_cross_entropy_with_logits': softmax_cross_entropy_with_logits})
 
 	def printWeightAverages(self):
 		layers = self.model.layers
@@ -55,55 +60,55 @@ class Gen_Model():
 				pass
 		lg.logger_model.info('******************')
 
+	if in_jupyter:
+		def viewLayers(self):
+			layers = self.model.layers
+			for i, l in enumerate(layers):
+				x = l.get_weights()
+				print('LAYER ' + str(i))
 
-	def viewLayers(self):
-		layers = self.model.layers
-		for i, l in enumerate(layers):
-			x = l.get_weights()
-			print('LAYER ' + str(i))
-
-			try:
-				weights = x[0]
-				s = weights.shape
-
-				fig = plt.figure(figsize=(s[2], s[3]))  # width, height in inches
-				channel = 0
-				filter = 0
-				for i in range(s[2] * s[3]):
-
-					sub = fig.add_subplot(s[3], s[2], i + 1)
-					sub.imshow(weights[:,:,channel,filter], cmap='coolwarm', clim=(-1, 1),aspect="auto")
-					channel = (channel + 1) % s[2]
-					filter = (filter + 1) % s[3]
-
-			except:
-	
 				try:
-					fig = plt.figure(figsize=(3, len(x)))  # width, height in inches
-					for i in range(len(x)):
-						sub = fig.add_subplot(len(x), 1, i + 1)
-						if i == 0:
-							clim = (0,2)
-						else:
-							clim = (0, 2)
-						sub.imshow([x[i]], cmap='coolwarm', clim=clim,aspect="auto")
-						
-					plt.show()
+					weights = x[0]
+					s = weights.shape
+
+					fig = plt.figure(figsize=(s[2], s[3]))  # width, height in inches
+					channel = 0
+					filter = 0
+					for i in range(s[2] * s[3]):
+
+						sub = fig.add_subplot(s[3], s[2], i + 1)
+						sub.imshow(weights[:,:,channel,filter], cmap='coolwarm', clim=(-1, 1),aspect="auto")
+						channel = (channel + 1) % s[2]
+						filter = (filter + 1) % s[3]
 
 				except:
+		
 					try:
-						fig = plt.figure(figsize=(3, 3))  # width, height in inches
-						sub = fig.add_subplot(1, 1, 1)
-						sub.imshow(x[0], cmap='coolwarm', clim=(-1, 1),aspect="auto")
-						
+						fig = plt.figure(figsize=(3, len(x)))  # width, height in inches
+						for i in range(len(x)):
+							sub = fig.add_subplot(len(x), 1, i + 1)
+							if i == 0:
+								clim = (0,2)
+							else:
+								clim = (0, 2)
+							sub.imshow([x[i]], cmap='coolwarm', clim=clim,aspect="auto")
+							
 						plt.show()
 
 					except:
-						pass
+						try:
+							fig = plt.figure(figsize=(3, 3))  # width, height in inches
+							sub = fig.add_subplot(1, 1, 1)
+							sub.imshow(x[0], cmap='coolwarm', clim=(-1, 1),aspect="auto")
+							
+							plt.show()
 
-			plt.show()
-				
-		lg.logger_model.info('------------------')
+						except:
+							pass
+
+				plt.show()
+					
+			lg.logger_model.info('------------------')
 
 
 class Residual_CNN(Gen_Model):

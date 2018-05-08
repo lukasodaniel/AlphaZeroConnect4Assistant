@@ -1,0 +1,122 @@
+<!doctype html>
+<head>
+
+<style>
+#gameboard {
+	width: 100%;
+	height: 100%;
+}
+
+.game-row {
+	float: left;
+	width: 100%;
+}
+
+.game-space {
+	width: 80px;
+	height: 80px;
+	float: left;
+	border-radius: 100%;
+    border: 2px solid black;
+}
+
+.legal-move {
+    border: 2px solid orange;
+}
+
+.selected {
+    border: 2px dotted pink;
+}
+
+.player1 {
+    background-color: red;
+}
+
+.player2 {
+    background-color: blue;
+}
+
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+
+<body>
+  <div id="gameboard">
+    <div class="game-row" id="row1">
+        <div class="game-space" id="space-0"></div>
+        <div class="game-space" id="space-1"></div>
+        <div class="game-space" id="space-2"></div>
+        <div class="game-space" id="space-3"></div>
+        <div class="game-space" id="space-4"></div>
+        <div class="game-space" id="space-5"></div>
+        <div class="game-space" id="space-6"></div>
+    </div>
+    <div class="game-row" id="row2">
+        <div class="game-space" id="space-7"></div>
+        <div class="game-space" id="space-8"></div>
+        <div class="game-space" id="space-9"></div>
+        <div class="game-space" id="space-10"></div>
+        <div class="game-space" id="space-11"></div>
+        <div class="game-space" id="space-12"></div>
+        <div class="game-space" id="space-13"></div>
+    </div>
+    <div class="game-row" id="row3">
+        <div class="game-space" id="space-14"></div>
+        <div class="game-space" id="space-15"></div>
+        <div class="game-space" id="space-16"></div>
+        <div class="game-space" id="space-17"></div>
+        <div class="game-space" id="space-18"></div>
+        <div class="game-space" id="space-19"></div>
+        <div class="game-space" id="space-20"></div>
+    </div>
+    <div class="game-row" id="row4">
+        <div class="game-space" id="space-21"></div>
+        <div class="game-space" id="space-22"></div>
+        <div class="game-space" id="space-23"></div>
+        <div class="game-space" id="space-24"></div>
+        <div class="game-space" id="space-25"></div>
+        <div class="game-space" id="space-26"></div>
+        <div class="game-space" id="space-27"></div>
+    </div>
+    <div class="game-row" id="row5">
+        <div class="game-space" id="space-28"></div>
+        <div class="game-space" id="space-29"></div>
+        <div class="game-space" id="space-30"></div>
+        <div class="game-space" id="space-31"></div>
+        <div class="game-space" id="space-32"></div>
+        <div class="game-space" id="space-33"></div>
+        <div class="game-space" id="space-34"></div>
+    </div>
+    <div class="game-row" id="row6">
+        <div class="game-space" id="space-35"></div>
+        <div class="game-space" id="space-36"></div>
+        <div class="game-space" id="space-37"></div>
+        <div class="game-space" id="space-38"></div>
+        <div class="game-space" id="space-39"></div>
+        <div class="game-space" id="space-40"></div>
+        <div class="game-space" id="space-41"></div>
+    </div>
+  </div>
+  <div>
+      <button id='play-button' disabled>Play</button>
+  </div>
+  <div>
+    Player 1
+    <input type="radio" id="p1unassisted" name="player1" value="unassisted" checked><label for="unassisted">Unassisted</label>
+    <input type="radio" id="p1assisted" name="player1" value="assisted"><label for="assisted">Assisted</label>
+    <input type="radio" id="p1computer" name="player1" value="computer"><label for="computer">Computer</label>
+  </div>
+  <div>
+    Player 2
+    <input type="radio" id="p2unassisted" name="player2" value="unassisted" checked><label for="unassisted">Unassisted</label>
+    <input type="radio" id="p2assisted" name="player2" value="assisted"><label for="assisted">Assisted</label>
+    <input type="radio" id="p2computer" name="player2" value="computer"><label for="computer">Computer</label>
+  </div>
+  <button id="new-game">New Game</button>
+</body>
+
+
+<script src="js/index.js"> </script>

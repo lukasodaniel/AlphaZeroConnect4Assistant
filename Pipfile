@@ -1,0 +1,35 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+
+
+[packages]
+
+jupyter = "==1.0.0"
+numpy = "==1.13.1"
+keras = "==2.1.2"
+pydot = "==1.2.4"
+jsonschema = "==2.6.0"
+enum = "==0.4.6"
+"pathlib2" = "==2.3.2"
+"enum34" = "==1.1.6"
+mock = "==2.0.0"
+np-utils = "==0.5.5.0"
+"backports.functools-lru-cache" = "*"
+matplotlib = "==2.2.2"
+"h5py" = "==2.7.1"
+nbconvert = "==5.3.1"
+ipykernel = "==4.8.2"
+#tensorflow-gpu = "==1.1.0" # uncomment for use on GPU
+tensorflow = "==1.1.0"		# comment out when using on system with GPU 
+bottle = "*"
+
+[requires]
+
+python_version = "2.7"

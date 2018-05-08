@@ -143,7 +143,7 @@ class GameState():
 
 	def _allowedActions(self):
 		allowed = []
-		for i in range(len(self.board)):
+		for i in xrange(len(self.board)):
 			if i >= len(self.board) - 7:
 				if self.board[i]==0:
 					allowed.append(i)
@@ -219,10 +219,18 @@ class GameState():
 
 		return (newState, value, done) 
 
-
-
+	def print_board(self):
+		for r in range(6):
+			print([x 
+					if self.pieces[str(self.board[x])] == '-' 
+					else self.pieces[str(self.board[x])] 
+					for x in range(7*r, 7*r + 7)])
+			#print([self.pieces[str(x)] for x in self.board[7*r : (7*r + 7)]])
 
 	def render(self, logger):
 		for r in range(6):
 			logger.info([self.pieces[str(x)] for x in self.board[7*r : (7*r + 7)]])
 		logger.info('--------------')
+
+
+
