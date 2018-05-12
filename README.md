@@ -2,7 +2,7 @@
 
 ## Using concepts from AlphaZero on Connect4 for applications in enabling technologies
 
-This project is a fork of [this repo](https://github.com/AppliedDataSciencePartners/DeepReinforcementLearning) which was written about in detail in [this article](https://medium.com/applied-data-science/how-to-build-your-own-alphazero-ai-using-python-and-keras-7f664945c188). Over the course of half a semester I modified this to be run UNC's Olympia server, trained several different networks, and created a small web app to hand test the progress of the different trained players. I then used the 
+This project is a fork of [this repo](https://github.com/AppliedDataSciencePartners/DeepReinforcementLearning) which was written about in detail in [this article](https://medium.com/applied-data-science/how-to-build-your-own-alphazero-ai-using-python-and-keras-7f664945c188). Over the course of half a semester I modified this to be run UNC's Olympia server, trained several different networks, and created a small web app to hand test the progress of the different trained players. I then used the trained network to recommended moves, with the intention of increasing accessibility of the strategic game to all cognitive abilities. 
 
 ## Getting Started
 
@@ -18,9 +18,11 @@ This project uses [pipenv](https://github.com/pypa/pipenv). This should be enoug
 
 The Olympia and Classroom servers run tcsh by default, but I have had much more success using bash, especially with anything using pipenv.
 
+#### With a GPU
+
 For the code to run properly on a GPU you will need to install all of the [requirements for Tensorflow GPU](https://www.tensorflow.org/install/install_linux#nvidia_requirements_to_run_tensorflow_with_gpu_support) (under "NVIDIA requirements to run TensorFlow with GPU support"). 
 
-The steps listed in that link are not the order in which those installations must be performed, nor do the versions listed on the site work (at least on Olympia). Listed below are the specific combination working on Olympia. 
+The steps listed in that link are not the order in which those installations must be performed, nor do the versions listed on the Tensorflow website work with these particular versions of Python or Tensorflow. Listed below are the specific combination working with this Pipfile on Olympia. 
 
 It is necessary to install the following in order:
 	1. [Your appropriate NVIDIA driver](http://www.nvidia.com/Download/index.aspx?lang=en-us)
@@ -42,7 +44,17 @@ make clean && make
 
 ### Installing
 
-From this point, the process both with and without a GPU should be the same.
+#### With a GPU
+
+By default the Pipfile is set to be run on an environment without a GPU.
+
+If you plan to run this code using a GPU you must first modify the Pipfile by commenting out the "tensorflow" requirement on like 30 and deleting the leading '#' on line 29 resulting in the following: 
+```
+tensorflow-gpu = "==1.1.0" # uncomment for use on GPU
+#tensorflow = "==1.1.0"		# comment out when using on system with GPU 
+```
+
+#### With and without a GPU
 
 Install all of the Python dependencies by navigating to the root directory of this project and then entering.
 ```
@@ -59,7 +71,7 @@ from tensorflow.python.client import device_lib
 device_lib.list_local_devices() # output should include multiple device descriptions one of which containing "GPU" under the name field
 ```
 
-It is very possible that didn't work, there seem to be a few issues with versions of Tensorflow and newer NVIDIA drivers/tools. On Olympia I messed around with several versions until I finally got CUDA Toolkit 8.0 and cuDNN v5.1 to run properly. 
+It is very possible that didn't work, there seem to be a few issues with versions of Tensorflow and newer NVIDIA drivers/tools. To reiterate, with these versions of Keras and Tensorflow on Olympia CUDA Toolkit 8.0 and cuDNN v5.1 ran properly. 
 
 ## Running the Jupyter Notebook
 
@@ -99,15 +111,31 @@ This will run infinitely in the background until you kill it or it fails due to 
 I tended to either use 
 `tail nohup.out` 
 
-which would give the end or 
+to view the most recent activity or 
 
 `cat nohup.out | grep "BEST"`
 which gives a summary of how many iterations of the player this particular run had gone through.
 
+### Picking up from a previous run with `initialise.py`
+
+TODO
+
 ## Using the Web App
 
-The web app is very bare bones and 
+The web app is very bare bones and is mostly to demo how to use the trained models in practice. To run the web app navigate to the project enter the following into the terminal:
+```
+pipenv shell
+python server.py
+```
+The project will now be running 
 
+## Further Project Navigation
+
+### `run` and `run_archive` directories
+
+### `config.py`
+
+### `games`
 
 ## Extending this project
 
