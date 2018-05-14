@@ -78,18 +78,11 @@ while 1:
 
     print('ITERATION NUMBER ' + str(iteration))
 
-    with open("main.log", "a") as mainlog:
-        mainlog.write('ITERATION NUMBER ' + str(iteration)+'\n')
-
     lg.logger_main.info('BEST PLAYER VERSION: %d', best_player_version)
     print('BEST PLAYER VERSION ' + str(best_player_version))
-    with open("main.log", "a") as mainlog:
-        mainlog.write('BEST PLAYER VERSION ' + str(best_player_version) + '\n')
 
     ######## SELF PLAY ########
     print('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...')
-    with open("main.log", "a") as mainlog:
-        mainlog.write('SELF PLAYING ' + str(config.EPISODES) + ' EPISODES...\n')
     _, memory, _, _ = playMatches(best_player, best_player, config.EPISODES, lg.logger_main, turns_until_tau0 = config.TURNS_UNTIL_TAU0, memory = memory)
     print('\n')
 
@@ -99,8 +92,6 @@ while 1:
 
         ######## RETRAINING ########
         print('RETRAINING...')
-        with open("main.log", "a") as mainlog:
-            mainlog.write('RETRAINING...\n')
         current_player.replay(memory.ltmemory)
         print('')
 

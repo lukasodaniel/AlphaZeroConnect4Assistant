@@ -93,7 +93,7 @@ def playMatches(player1, player2, EPISODES, logger, turns_until_tau0, memory = N
 
 
             logger.info('action: %d', action)
-            for r in xrange(env.grid_shape[0]):
+            for r in range(env.grid_shape[0]):
                 logger.info(['----' if x == 0 else '{0:.2f}'.format(np.round(x,2)) for x in pi[env.grid_shape[1]*r : (env.grid_shape[1]*r + env.grid_shape[1])]])
             logger.info('MCTS perceived value for %s: %f', state.pieces[str(state.playerTurn)] ,np.round(MCTS_value,2))
             logger.info('NN perceived value for %s: %f', state.pieces[str(state.playerTurn)] ,np.round(NN_value,2))

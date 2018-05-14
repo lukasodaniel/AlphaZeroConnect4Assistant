@@ -49,10 +49,10 @@ Additionally I had issues unless I specified a particular GPU, so adding `export
 
 You can ensure that you have properly installed the above by running the [verification steps of the cuDNN installation guide](https://docs.nvidia.com/deeplearning/sdk/cudnn-install/#verify)
 ```
-cp -r /path/to/cudnn_samples_v7/ $HOME # or whichever writable directory
-cd $HOME/cudnn_samples_v7/mnistCUDNN
-make clean && make
-./mnistCUDNN
+$ cp -r /path/to/cudnn_samples_v7/ $HOME # or whichever writable directory
+$ cd $HOME/cudnn_samples_v7/mnistCUDNN
+$ make clean && make
+$ ./mnistCUDNN
 ```
 
 ### Installing
@@ -71,13 +71,13 @@ tensorflow-gpu = "==1.1.0" # uncomment for use on GPU
 
 Install all of the Python dependencies by navigating to the root directory of this project and then entering.
 ```
-pipenv install
+$ pipenv install
 ```
 As of May 8, 2018, this does not have any dependency issues, although there are deprecation warnings. Previously there was some sort of dependency cycle that could not be resolved, but installing using `--skip-lock` worked properly. 
 
-Now we have a virtual environment with all of the necessary Python packages and if we use `pipenv shell` we can now execute anything within this virtual environment. 
+Now we have a virtual environment with all of the necessary Python packages and if we use `$ pipenv shell` we can now execute anything within this virtual environment. 
 
-If planning on using a GPU for training, the biggest thing to test at this point is if the GPU device is visible from Tensorflow, which can be done with by first starting the Virtual environment shell (`pipenv shell`), and then starting a python session (`$ python`) and running:
+If planning on using a GPU for training, the biggest thing to test at this point is if the GPU device is visible from Tensorflow, which can be done with by first starting the Virtual environment shell (`$ pipenv shell`), and then starting a python session (`$ python`) and running:
 ```
 import tensorflow
 from tensorflow.python.client import device_lib
@@ -94,8 +94,8 @@ The basic idea of most of the functionality can be viewed in the run.ipynb noteb
 
 Run by
 ```
-pipenv shell
-jupyter notebook
+$ pipenv shell
+$ jupyter notebook
 ```
 
 And navigate to `run.ipynb`.
@@ -104,12 +104,12 @@ And navigate to `run.ipynb`.
 
 Run the jupyter notebook headless on the server with: 
 ```
-jupyter notebook --no-browser --port=12345 # or any port
+$ jupyter notebook --no-browser --port=12345 # or any port number
 ```
 
 Then on your local machine establish an SSH tunnel with:
 ```
-ssh -N -f -L localhost:8888:localhost:12345 remote_user@remote_host
+$ ssh -N -f -L localhost:8888:localhost:12345 remote_user@remote_host
 ```
 
 Note: if attempting to tunnel to the Olympia machine, you must first tunnel through another server, so this results in two ssh tunnels. 
@@ -117,38 +117,65 @@ Note: if attempting to tunnel to the Olympia machine, you must first tunnel thro
 
 ## Running for extended periods of time without a GUI
 
-The nature of this particular task will require long runs (overnight to a couple of days), too long to keep an instance of running in a Jupyter notebook. This is the intended use of `main.py`. There are several ways you could choose to run this for an extended period, (GB suggested tmux), but my preferred way was using nohup. On the server (or locally) you can kick off this by using `nohup python main.py`. The output from this file will go to `nohup.out` 
+The nature of this particular task will require long runs (overnight to a couple of days), too long to keep an instance of running in a Jupyter notebook. This is the intended use of `main.py`. There are several ways you could choose to run this for an extended period, (GB suggested tmux), but my preferred way was using nohup. On the server (or locally) you can kick off this by using 
+```$ nohup python main.py &``` 
+
+The output from this file will go to `nohup.out` 
 
 This will run infinitely in the background until you kill it or it fails due to some system error. You can check the progress by checking `nohup.out`. 
 
 I tended to either use 
-`tail nohup.out` 
+`$ tail nohup.out` 
 
 to view the most recent activity or 
 
-`cat nohup.out | grep "BEST"`
+`$ cat nohup.out | grep "BEST"`
 which gives a summary of how many iterations of the player this particular run had gone through.
 
-### Picking up from a previous run with `initialise.py`
-
-TODO
 
 ## Using the Web App
 
 The web app is very bare bones and is mostly to demo how to use the trained models in practice. To run the web app navigate to the project enter the following into the terminal:
 ```
-pipenv shell
-python server.py
+$ pipenv shell
+$ python server.py
 ```
 The project will now be running 
 
 ## Further Project Navigation
 
-### `run` and `run_archive` directories
-
 ### `config.py`
 
-### `games`
+`config.py` contains all of the run and neural net configuration information. This is a major area to tinker with as this can end up with drastically different results. Specifically increasing `EPISODES`, `MCTS_SIMS`, and `MEMORY_SIZE` essentially increase the size of the training data and can lead to a much higher quality player, although running takes much longer. 
+
+### `run` and `run_archive` directories
+
+The `run` directory contains the logs, memory files, config information, and trained models of the most recent run of either the training loop of `run.ipynb` or `main.py`. 
+
+The intention of the `run_archive` directory is to store any meaningful/useful resultant `run` directories for later use. For a run of Connect 4, you can copy a run directory to `run_archive/connect4/runXXXX` where "XXXX" is a zero filled number, i.e. 0004. There are a few examples currently in the project containing different `config.py` files.
+
+Note that you will likely want to delete most of the memory files and log files before copying as these can be very large and you will likely only want the most recent memory.
+
+### `initialise.py`
+
+`initialise.py` contains information used in `run.ipynb` and `main.py` for where to search for previous run data to pick up from. `INITIAL_RUN_NUMBER` is the directory number, `INITIAL_MODEL_VERSION` is the non zero filled number in the `version*.h5` net to continue with, and `INITIAL_MEMORY_VERSION` is the non zero filled number in `memory*.p` to continue from.
+
+
+### `loggers.py`
+
+Here you can disable logging. By setting any of the elements of `LOGGER_DISABLED` to `True` you can prevent the training from creating any of the specific log files. For any extended run, you will likely want to set all to `True` because these log files can get extremely large.
+
+### `settings.py`
+
+Here you can change the the default locations of the run and run archive directories.
+
+### `games` and `game.py`
+
+The `games` directory currently contains `connect4` and `metasquares`, both of which contain an `game.py` file. `game.py` is a generic specification of each of these games in a standard way so that the rest of the project can interface with it. To create any new game for use with this project, follow those two as examples. To run the network on a different game you must replace the `game.py` file in the project root directory with the a different `game.py` file.
+
+The `Game` class in `game.py` contains a field `name` which will need to be consistent with the any game directory name in the `run_archive` directory.
+
+## Known Issues 
 
 ## Extending this project
 
