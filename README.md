@@ -33,6 +33,19 @@ It is necessary to install the following in order:
 		Ensure that you create the CUDA_HOME environment variable as described in the NVIDIA documentation
 		Also ensure that the cuDNN you are getting is the for the proper version of the CUDA toolkit
 
+With this particular combination I had to add the following to my `.bashrc`:
+
+```
+export PATH=/usr/local/cuda-8.0/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64\
+                         ${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+			 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-8.0/extras/CUPTI/lib64
+
+export CUDA_PATH=/usr/local/cuda-8.0/
+```
+
+Additionally I had issues unless I specified a particular GPU, so adding `export CUDA_VISIBLE_DEVICES=0` to my `.bashrc` (or just prior to running a Tensorflow program) was also necessary on Olympia at least.
 
 You can ensure that you have properly installed the above by running the [verification steps of the cuDNN installation guide](https://docs.nvidia.com/deeplearning/sdk/cudnn-install/#verify)
 ```
@@ -71,11 +84,11 @@ from tensorflow.python.client import device_lib
 device_lib.list_local_devices() # output should include multiple device descriptions one of which containing "GPU" under the name field
 ```
 
-It is very possible that didn't work, there seem to be a few issues with versions of Tensorflow and newer NVIDIA drivers/tools. To reiterate, with these versions of Keras and Tensorflow on Olympia CUDA Toolkit 8.0 and cuDNN v5.1 ran properly. 
+It is very possible that didn't work, there seem to be a few issues with versions of Tensorflow and newer NVIDIA drivers/tools. To reiterate, with these versions of Keras and Tensorflow on Olympia CUDA Toolkit 8.0 and cuDNN v5.1 ran properly however with any other combination there were issues. 
 
 ## Running the Jupyter Notebook
 
-The basic idea of most of the functionality can be viewed in the run.ipynb notebook. 
+The basic idea of most of the functionality can be viewed in the run.ipynb notebook. It contains the basic training loop as well as the fundamental way to use the trained net for suggesting moves. 
 
 ### Running locally
 
